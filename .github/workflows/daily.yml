@@ -1,0 +1,29 @@
+name: Daily CAT Vocab Email
+
+on:
+  schedule:
+    - cron: '30 1 * * *'  # 7:00 AM IST (UTC+5:30 = 01:30 UTC)
+  workflow_dispatch:        # lets you trigger manually anytime
+
+jobs:
+  send-vocab:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install google-genai
+
+      - name: Run vocab bot
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+        run: python Words_automation.py
